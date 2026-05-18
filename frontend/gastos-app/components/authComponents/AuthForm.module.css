@@ -1,0 +1,33 @@
+
+.container{
+    background-color: khaki;
+    padding: 15px;
+    
+}
+
+.form{
+    display: grid;
+
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas: 
+        "userlabel userinput"
+        "pwdlabel pwdinput"
+    ;
+}
+
+.userlabel{
+    grid-area: userlabel;
+}
+
+.userinput{
+    grid-area: userinput;
+}
+
+.pwdlabel{
+    grid-area: pwdlabel;
+}
+
+.pwdinput{
+    grid-area: pwdinput;
+}

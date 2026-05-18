@@ -1,0 +1,39 @@
+:root{
+    --radius: 6px
+}
+
+.container{
+    min-height: 30px;
+    min-width: 50px;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.rightDiv{
+    border-top-right-radius: var(--radius);
+
+    flex: 1;
+
+    min-height: 20px;
+}
+
+.middleDiv{
+    flex: 1;
+
+    text-align:  center;
+    color: white;
+    padding: 2px;
+
+    border-bottom-left-radius: var(--radius);
+    border-bottom-left-radius: var(--radius);
+}
+
+.leftDiv{
+
+    border-top-left-radius: var(--radius);
+    flex: 1;
+
+    min-height: 20px;
+}

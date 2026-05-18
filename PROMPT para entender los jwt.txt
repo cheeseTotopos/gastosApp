@@ -1,0 +1,14 @@
+PROMPT para entender los jwt
+
+okei mira, para hacer la validación con jwt estoy viendo videos de cómo hacerlo, y encontré una respuesta en reddit de cómo hacerlo también, y me estoy basando en el código que me diste también, pero como que todavía no me queda claro los pasos coceptuales para usarlos. Primero, vayamos a la parte de construir el token. Cómo se construye?
+
+Implementación en ASP.NET Core (paso a paso)
+
+
+ayuda para entender el uso de jwt
+https://stackoverflow.com/questions/74441535/creating-and-validating-jwt-tokens-in-c-sharp-net
+
+si en mi archivo csjproject tengo el id del secret.json, si alguien accede a mi computadora, teniendo el id puede tener
+acceso a mis secretos, cómo es eso seguro?
+
+por qué los tokens generados son muy parecidos entre sí?
