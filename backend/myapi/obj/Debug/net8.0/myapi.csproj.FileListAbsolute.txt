@@ -50,3 +50,4 @@ C:\Users\Humberto\Desktop\gastosApp\backend\myapi\bin\Debug\net8.0\Microsoft.Ide
 C:\Users\Humberto\Desktop\gastosApp\backend\myapi\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\Users\Humberto\Desktop\gastosApp\backend\myapi\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\Humberto\Desktop\gastosApp\backend\myapi\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\Humberto\Desktop\gastosApp\backend\myapi\obj\Debug\net8.0\myapi.sourcelink.json

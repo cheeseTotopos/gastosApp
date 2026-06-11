@@ -1,29 +1,36 @@
-public class LoginService
+public class LoginService(UserService _us)
 {
-    private readonly UserService _UserService;
-    private readonly AppDBConection _conn;
-
-    public LoginService(UserService userservice, AppDBConection conn)
-    {
-        _UserService = userservice;
-        _conn = conn;
-    }
 
     //The ? sign is to tell that the method can return a null 
-    public User? Login(string username, string pwd)
+    public async Task<ResponseFormat<User?>> Login(AuthBase data)
     {
-        var user = _UserService.GetUser(username, pwd);
+        var user = await _us.GetUser(data.Username, data.Pwd);
 
-        if (user == null) return null;
+        //check if user is founded
+        if (user == null) 
+            return new ResponseFormat<User?>
+            {
+                Success = false,
+                Message = "Usuario no encontrado",
+                Data = null
+            };
 
-        if (user.Pwd != pwd) return null;
-
-        return user;
+        return new ResponseFormat<User?>
+        {
+            Success = true,
+            Message = "Usuario encontrado",
+            Data = user
+        };
     }
 
-    public int RegisterUser(string name, string pwd, DateOnly bd, decimal amount)
+    public async Task<ResponseFormat<User>> RegisterUser(RegisterUser data)
     {
-        var lastId = _UserService.Add(name, pwd, bd, amount);
-        return lastId;
+        var user = await _us.Add(data.Username.Trim(), data.Pwd.Trim(), data.BD, data.Amount);
+        return new ResponseFormat<User>
+        {
+            Success = true,
+            Message = "Usuario creado correctamente",
+            Data = user
+        };
     }
 }

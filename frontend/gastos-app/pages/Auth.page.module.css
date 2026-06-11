@@ -4,10 +4,11 @@
     display: grid;
 
     grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
     grid-template-areas: 
         ". titleline ."
         ". card ."
+        ". redirection ."
     ;
 }
 
@@ -19,16 +20,22 @@
     grid-area: card;
 }
 
+.redirection{
+    grid-area: redirection;
+    text-align: center;
+}
+
 @media(max-width: 480px){
     .authPageDiv{
         padding: 5px;
         display: grid;
 
         grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-        grid-template-rows: 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr;
         grid-template-areas: 
             ". titleline titleline titleline ."
             ". card card card ."
+            ". redirection redirection redirection ."
         ;
     }
 }
@@ -39,10 +46,11 @@
         display: grid;
 
         grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-        grid-template-rows: 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr;
         grid-template-areas: 
             ". titleline titleline titleline titleline titleline ."
             ". card card card card card."
+            ". . redirection redirection redirection . ."
         ;
     }
 }

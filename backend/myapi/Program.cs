@@ -42,14 +42,28 @@ builder.Services.AddAuthentication("Bearer")
             ),
 
             ValidateIssuer = true,
-            ValidIssuer = "https://myapi",
+            ValidIssuer = "http://myapi",
 
             ValidateAudience = true,
-            ValidAudience = "https://myfrontend",
+            ValidAudience = "http://myfrontend",
 
             ValidateLifetime = true
         };
     });
+
+//authenticate which clients can access to our api
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ReactPolicy",
+        policy =>
+        {
+            policy.WithOrigins(
+                "http://localhost:5173"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+        });
+});
 
 
 builder.Services.AddAuthorization();
@@ -61,6 +75,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("ReactPolicy");
 
 app.UseHttpsRedirection();
 

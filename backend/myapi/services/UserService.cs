@@ -1,20 +1,10 @@
-public class UserService
+using Microsoft.EntityFrameworkCore;
+
+public class UserService(AppDBConection _conn)
 {
-    public List<User> users = new List<User>{};
 
-    private readonly AppDBConection _conn;
-
-    public UserService(AppDBConection conn)
+    public async Task<User> Add(string name, string pwd, DateOnly bd, decimal amount)
     {
-        _conn = conn;
-    }
-
-    public int Add(string name, string pwd, DateOnly bd, decimal amount)
-    {
-        //this way will not work, because on  our class we have an empty constructor, for ef to work the correct way.
-        //What we could do is instance the object withour passing to the constructor
-        //User user = new User(name, pwd, bd, amount);
-
         User user = new User
         {
             Name = name,
@@ -22,25 +12,21 @@ public class UserService
             BD = bd,
             Amount = amount,
         };
-        _conn.Users.Add(user);
-        var lastId = _conn.SaveChanges();
-        return lastId;
+        await _conn.Users.AddAsync(user);
+        await  _conn.SaveChangesAsync();
+        return user;
     }
 
-    public User? GetUser(string username, string pwd)
+    public async Task<User?> GetUser(string username, string pwd)
     {
-        return _conn.Users.FirstOrDefault(u => u.Name == username && u.Pwd == pwd);
+        return await _conn.Users.FirstOrDefaultAsync(u => u.Name == username && u.Pwd == pwd);
     }
 
     //find a user with its id
-    public bool UserExists(int userid)
+    public async Task<User?> UserExists(int userid)
     {
-        var user = _conn.Users.Find(userid);
-
-        if(user == null)
-            return false;
-
-        return true;
+        var user = await _conn.Users.FindAsync(userid);
+        return user;
     }
 
     //decrease the user amount. This is used when a user create a movement. Return true if the user amount is modified correctly.

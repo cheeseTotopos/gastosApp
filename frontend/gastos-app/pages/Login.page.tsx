@@ -1,8 +1,9 @@
 import AuthHeader from "../components/authComponents/AuthHeader";
 import AuthForm from "../components/authComponents/AuthForm";
 import styles from "./Auth.page.module.css";
+import { Link } from "react-router";
 
-function AuthPage(){
+function LoginPage(){
 
     return(
         <div className={styles.authPageDiv}>
@@ -14,8 +15,12 @@ function AuthPage(){
             <div className = {styles.form}>
                 <AuthForm />
             </div>
+
+            <div className={styles.redirection}>
+                <Link to="/register">¿Aún no eres usuario? Regístrate</Link>
+            </div>
         </div>
     )
 }
 
-export default AuthPage;
+export default LoginPage;

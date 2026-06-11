@@ -1,56 +1,113 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Microsoft.EntityFrameworkCore;
 
-public class MovementClasificationService
+public class MovementClasificationService(UserService _us, AppDBConection _conn)
 {
-    public List<MovementClasification> Clasifications = new List<MovementClasification>{};
-    private readonly UserService _userService;
-    private readonly AppDBConection _conn;
-
-    //dependency inyection
-    public MovementClasificationService(UserService userservice, AppDBConection connection)
+    public async Task<ResponseFormat<MovementClasification?>> Add(AddClasification data)
     {
-        _userService = userservice;
-        _conn = connection;
-    }
+        //check if user exists
+        var user = await _us.UserExists(data.UserId);
+        if (user == null)
+            return new ResponseFormat<MovementClasification?>
+            {
+                Success = false,
+                Message = "El usuario no pudo ser encontrado",
+                Data = null
+            };
 
-    public bool Add(int userid, string description, int movementypeid /*inversion, gasto o ingreso*/)
-    {
-        //check if user Id exists
-        var userExists = _userService.UserExists(userid);
-        if (!userExists)
-        {
-            return false;
-        }
+        //check if movement clasification exists
+        bool movementValid = IsMovementTypeValid(data.MT);
+        if(movementValid == false)
+            return new ResponseFormat<MovementClasification?>
+            {
+                Success = false,
+                Message = "El tipo de movimiento no es válido",
+                Data = null
+            };
 
+        //check if the clasification name already exists
+        bool nameAlreadyExist = await UserClasificationAlreadyExists(data.Description.Trim(), data.UserId);
+        if(nameAlreadyExist == true)
+            return new ResponseFormat<MovementClasification?>
+            {
+                Success = false,
+                Message = "La clasificación " + data.Description.Trim() + " ya existe",
+                Data = null
+            };
         MovementClasification clasification = new MovementClasification
         {
-            MovementTypeId = movementypeid,
-            Description = description,
-            UserRegId = userid
+            MovementTypeId = data.MT,
+            Description = data.Description.Trim(),
+            UserRegId = data.UserId
         };
 
-        _conn.Clasifications.Add(clasification);
-        var lastId = _conn.SaveChanges();
-        if(lastId > 0)
-            return true;
+        await _conn.Clasifications.AddAsync(clasification);
+        await _conn.SaveChangesAsync();
 
-        return false;
+        return new ResponseFormat<MovementClasification?>
+        {
+            Success = true,
+            Message = "Clasificación creada con éxito",
+            Data = clasification
+        };
     }
 
-    public bool Edit(int clasificationId, string newDescription)
+    public async Task<ResponseFormat<MovementClasification?>>Edit(EditClasification data)
     {
-        //check if the clasification exists
-        var clasification = _conn.Clasifications.Find(clasificationId);
-        if(clasification == null)
-            return false;
+        //check if the user exists
+        var user = await _us.UserExists(data.UserId);
+        if (user == null)
+            return new ResponseFormat<MovementClasification?>
+            {
+                Success = false,
+                Message = "El usuario no pudo ser encontrado",
+                Data = null
+            };
+        //check if the clasification exists and belongs to user
+        var belongs = await ClasificationBelongToUser(data.UserId, data.ClasificationId);
+        if(belongs == false)
+            return new ResponseFormat<MovementClasification?>
+            {
+                Success = false,
+                Message = "La clasificacion no pertenece al usuario",
+                Data = null
+            };
 
-        clasification.Description = newDescription;
-        _conn.SaveChanges();
-        return true;
+        //check if the name its not repeated
+        var repeated = await UserClasificationAlreadyExists(data.NewDescription.Trim(), data.UserId);
+        if(repeated == true)
+            return new ResponseFormat<MovementClasification?>
+            {
+                Success = false,
+                Message = "No se ha detectado ningún cambio",
+                Data = null
+            };
+
+        //get the clasification to edit the description.
+        var clasification = await GetMovementClasification(data.ClasificationId);
+        if(clasification == null)
+            return new ResponseFormat<MovementClasification?>
+            {
+                Success = false,
+                Message = "No fue encontrada esta clasificación",
+                Data = null
+            };
+
+        var oldDescription = clasification.Description;
+
+        clasification.Description = data.NewDescription.Trim();
+        await _conn.SaveChangesAsync();
+
+        return new ResponseFormat<MovementClasification?>
+        {
+            Success = true,
+            Message = "Clasificación '" + oldDescription + "' cambiada a '" + data.NewDescription.Trim() + "' correctamente",
+            Data = clasification
+        };
     }
 
-    public bool Delete(int clasificationId)
+    /*public bool Delete(int clasificationId)
     {
         var clasification = Clasifications.Find(cl => cl.Id == clasificationId);
         if(clasification == null)
@@ -58,7 +115,7 @@ public class MovementClasificationService
 
         Clasifications.RemoveAll(cl => cl.Id == clasificationId);
         return true;
-    }
+    }*/
 
     //function to valid if the movement type (inversión, gastos o ingresos) id belongs to the movementType enum
     public bool IsMovementTypeValid(int id)
@@ -68,12 +125,24 @@ public class MovementClasificationService
     }
 
     //function to valid if the clasification id belongs to the user
-    public bool ClasificationBelongToUser(int userId, int clasificationId)
+    public async Task<bool> ClasificationBelongToUser(int userId, int clasificationId)
     {
-        var clasification = _conn.Clasifications.FirstOrDefault(clas => clas.Id == clasificationId && clas.UserRegId == userId);
+        var clasification = await _conn.Clasifications.FirstOrDefaultAsync(clas => clas.Id == clasificationId && clas.UserRegId == userId);
         if(clasification != null)
             return true;
 
         return false;
+    }
+
+    public async Task<bool> UserClasificationAlreadyExists(string clasname, int userid)
+    {
+        bool exists = await _conn.Clasifications.AnyAsync(c => c.Description == clasname && c.UserRegId == userid);
+        return exists;
+    } 
+
+    public async Task<MovementClasification?> GetMovementClasification(int clasId)
+    {
+        var clas = await _conn.Clasifications.FirstOrDefaultAsync(c => c.Id == clasId);
+        return clas;
     }
 }

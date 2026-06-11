@@ -1,6 +1,5 @@
 
 .container{
-    background-color: khaki;
     padding: 15px;
     
 }
@@ -8,11 +7,13 @@
 .form{
     display: grid;
 
-    grid-template-columns: 1fr 2fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 10px;
     grid-template-areas: 
-        "userlabel userinput"
-        "pwdlabel pwdinput"
+        "userlabel userinput userinput"
+        "pwdlabel pwdinput pwdinput"
+        ". button ."
     ;
 }
 
@@ -30,4 +31,8 @@
 
 .pwdinput{
     grid-area: pwdinput;
+}
+
+.button{
+    grid-area: button;
 }

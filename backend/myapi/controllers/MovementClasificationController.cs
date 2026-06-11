@@ -1,42 +1,31 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("clasifications")]
-public class MovementClasificationController: ControllerBase
+public class MovementClasificationController(MovementClasificationService _cs): ControllerBase
 {
-    private readonly MovementClasificationService _clasificationservice;
-
-    public MovementClasificationController(MovementClasificationService service)
-    {
-        _clasificationservice = service;
-    }
-
+    [Authorize]
     [HttpPostAttribute("add")]
-    public IActionResult Add([FromBody] AddClasification clas)
+    public async Task<IActionResult> Add([FromBody] AddClasification data)
     {
-        var movementTypeExists = _clasificationservice.IsMovementTypeValid(clas.MT);
-        if(!movementTypeExists)
-            return BadRequest("Ese tipo de movimiento no existe");
+        var result = await _cs.Add(data);
+        if(result.Success == false)
+            return Unauthorized(result.Message);
 
-        var result = _clasificationservice.Add(clas.UserId, clas.Description, clas.MT);
-        if(!result)
-            return Unauthorized("Usuario no encontrado");
-
-        return Ok("Clasificacion " + clas.Description + " añadida correctamente");
+        return Ok(result);
     }
 
+    [Authorize]
     [HttpPostAttribute("edit")]
-    public IActionResult Edit([FromBody] EditClasification edit)
+    public async Task<IActionResult> Edit([FromBody] EditClasification data)
     {
-
-        if(edit.NewDescription == "" || edit.NewDescription == null)
-            return Unauthorized("El nuevo nombre de la clasificacion no puede ser vacío");
             
-        var result = _clasificationservice.Edit(edit.ClasificationId, edit.NewDescription);
+        var result = await _cs.Edit(data);
 
-        if(!result)
-            return Unauthorized("Clasificacion no encontrada");
+        if(result.Success == false)
+            return Unauthorized(result.Message);
 
-        return Ok("Clasificacion cambiada con éxito");
+        return Ok(result);
     }
 }
