@@ -18,4 +18,7 @@ public class MovementClasification()
 
     [ForeignKey("User")]
     public int UserRegId {get; set;}
+
+    //the movement conection. This is because the Movement model implements this model id as a foreign key
+    public ICollection<Movement> Movements = new List<Movement>{};
 }

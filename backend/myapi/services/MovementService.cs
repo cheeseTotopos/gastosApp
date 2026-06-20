@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 public class MovementService(AppDBConection _conn, UserService _us, MovementClasificationService _cs)
 {
     public async Task<ResponseFormat<Movement?>> Add(MovementBase data)
@@ -42,7 +44,12 @@ public class MovementService(AppDBConection _conn, UserService _us, MovementClas
             ClasificationId = data.ClasificationId
         };
 
+        //add the movement
         await _conn.Movements.AddAsync(movement);
+
+        //increase or decrease the user amount
+        await _us.AffectAmount(data.MT, data.Amount, data.UserId);
+        //save the changes
         await _conn.SaveChangesAsync();
 
         return new ResponseFormat<Movement?>
@@ -52,5 +59,52 @@ public class MovementService(AppDBConection _conn, UserService _us, MovementClas
             Data = movement
         };
     } 
+
+    public async Task<ResponseFormat<GetMovementsResponse?>> GetMovements(MovementDate data)
+    {
+        //check if the user exists
+        var user = await _us.UserExists(data.UserId);
+        if(user == null)
+            return new ResponseFormat<GetMovementsResponse?>
+            {
+                Success = false,
+                Message = "El usuario no fue encontrado",
+                Data = null
+            };
+
+        //if the final date of the range its null, we use the currentdate
+        DateOnly? finalDate = data.FinalDate;
+        if(finalDate == null)
+            finalDate = DateOnly.FromDateTime(DateTime.Now);
+
+        var movements = await (from m in  _conn.Movements
+                        where m.UserId == user.Id
+                        join clas in _conn.Clasifications on m.ClasificationId equals clas.Id
+                        orderby m.MT
+                        select new MovementsCompleteDescription
+                        {
+                            MT = m.MT,
+                            ClasificationId = clas.Id,
+                            ClasificationDescription = clas.Description,
+                            MovementId = m.Id,
+                            MovementAmount = m.Amount,
+                            MovementDescription = m.Description,
+                        }).ToListAsync();
+
+        var response = new GetMovementsResponse
+        {
+            UserId = user.Id,
+            UserName = user.Name,
+            UserAmount = user.Amount,
+            Movements = movements,
+        };
+
+        return new ResponseFormat<GetMovementsResponse?>
+        {
+            Success = true,
+            Message = "Movimientos obtenidos con éxito",
+            Data = response
+        };
+    }
 
 }

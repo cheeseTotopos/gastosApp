@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 //this is because the db table name is different
 [Table("movements")]
-public class Movement
+public class Movement()
 {
     [Key]
     public int Id {get; set;}
@@ -19,21 +20,5 @@ public class Movement
     
     [ForeignKey("MovementClasification")]
     public int ClasificationId {get; set;}
-
-    public Movement()
-    {
-        
-    }
-
-    //This constructor was before the entitiy framework, for local object creation
-    public Movement(int id, DateOnly date, int mt, decimal amount, string description, int userid, int clasificationId)
-    {
-        Id = id;
-        MovementDate = date;
-        MT = mt;
-        Amount = amount;
-        Description = description;
-        UserId = userid;
-        ClasificationId = clasificationId;
-    }
+    public MovementClasification Clasification{get; set;} = null!;
 }

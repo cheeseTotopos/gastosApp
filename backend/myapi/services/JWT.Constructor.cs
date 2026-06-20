@@ -27,7 +27,7 @@ public class TokenConstructor(IConfiguration conf)
 {
     
     /*Declaring the method that will return the token*/
-    public string TokenGenerator(User data)
+    public string TokenGenerator(UserForResponseDTO data)
     {
         //in here we access to our jwt secret using the conf object
         string? secretKey = conf["jwt"];
@@ -48,8 +48,8 @@ public class TokenConstructor(IConfiguration conf)
         var claims = new[]
         {
             //arguments for a claim are: meaning or context the value, value
-            new Claim(JwtRegisteredClaimNames.Sub, data.Id.ToString()),//sub is for an id
-            new Claim(JwtRegisteredClaimNames.UniqueName, data.Name)
+            new Claim(JwtRegisteredClaimNames.Sub, data.UserId.ToString()),//sub is for an id
+            new Claim(JwtRegisteredClaimNames.UniqueName, data.Username)
         };
 
         var rawToken = new JwtSecurityToken(

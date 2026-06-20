@@ -7,23 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 
 //this is the way to declare that all our endpoints (methods that can be requested for our frontend) will begin with "auth"
 [Route("auth")]
-public class AuthController : ControllerBase
+public class AuthController(LoginService _loginService, TokenConstructor _tc) : ControllerBase
 {
-
-    //this is not the correct form to initialize an object. This is like initializing manually
-    //private LoginService _loginService = new LoginService();
-
-    //this is the correct way, using the readonly. This initialize form is from the builder.Services we declared in Program.cs file
-    private readonly LoginService _loginService;
-    private readonly TokenConstructor _tc;
-    private readonly UserService _us;
-
-    public AuthController(LoginService loginservice, TokenConstructor tc, UserService us)
-    {
-        _loginService = loginservice;
-        _tc = tc;
-        _us = us;
-    }
 
     [HttpPostAttribute("login")]
     

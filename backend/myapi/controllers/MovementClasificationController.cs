@@ -28,4 +28,15 @@ public class MovementClasificationController(MovementClasificationService _cs): 
 
         return Ok(result);
     }
+
+    [Authorize]
+    [HttpPostAttribute("getclasifications")]
+    public async Task<IActionResult> GetClasifications([FromBody] ClasificationListDTO data)
+    {
+        var response = await _cs.GetUserClasifications(data);
+        if(response.Success == false)
+            return Unauthorized(response.Message);
+
+        return Ok(response);
+    }
 }

@@ -145,4 +145,48 @@ public class MovementClasificationService(UserService _us, AppDBConection _conn)
         var clas = await _conn.Clasifications.FirstOrDefaultAsync(c => c.Id == clasId);
         return clas;
     }
+
+    //I put a random rumber to initialize mt, because 0 is already a mt
+    public async Task<ResponseFormat<List<ClasificationListResponseDTO>?>> GetUserClasifications(ClasificationListDTO data)
+    {
+        //if mt its sended by the user, check if its a valid mt
+        if(data.MT != null)
+        {
+            bool validMT = IsMovementTypeValid(data.MT.Value);
+            if(validMT == false)
+                return new ResponseFormat<List<ClasificationListResponseDTO>?>
+                {
+                    Success = false,
+                    Message = "El tipo de movimiento no es válido",
+                    Data = null
+                };
+        }
+
+        //check if user exists
+        var user = await _us.GetUserById(data.UserId);
+        if(user == null)
+            return new ResponseFormat<List<ClasificationListResponseDTO>?>
+                {
+                    Success = false,
+                    Message = "El Usuario no fue encontrado",
+                    Data = null
+                };
+
+        var clasifications = await (from mov in _conn.Clasifications
+                                where mov.UserRegId == data.UserId
+                                orderby mov.MovementTypeId
+                                select new ClasificationListResponseDTO
+                                {    
+                                    Id = mov.Id, 
+                                    MovemetType = mov.MovementTypeId,
+                                    Description = mov.Description
+                                }).ToListAsync();
+
+        return new ResponseFormat<List<ClasificationListResponseDTO>?>
+        {
+            Success = true,
+            Message = "Clasificaciones obtenidas con éxito",
+            Data = clasifications
+        };
+    }
 }
