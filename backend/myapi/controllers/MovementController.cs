@@ -28,6 +28,16 @@ public class MovementController(MovementService _ms): ControllerBase
             return Unauthorized(response);
 
         return Ok(response);
-        
+    }
+
+    [Authorize]
+    [HttpPost("getmovementstotals")]
+    public async Task<IActionResult> GetMovementsTotals([FromBody] MovementDate data)
+    {
+        var response = await _ms.GetMovementsTotal(data);
+        if(response.Success == false)
+            return Unauthorized(response);
+
+        return Ok(response);
     }
 }

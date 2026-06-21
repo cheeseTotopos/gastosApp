@@ -60,6 +60,8 @@ public class MovementService(AppDBConection _conn, UserService _us, MovementClas
         };
     } 
 
+    //Get all the movements between a specific tworange date. The second date its optional and if its not there, its taken
+    //as the today date
     public async Task<ResponseFormat<GetMovementsResponse?>> GetMovements(MovementDate data)
     {
         //check if the user exists
@@ -107,4 +109,58 @@ public class MovementService(AppDBConection _conn, UserService _us, MovementClas
         };
     }
 
+    //get the total of the movements groouped by clasifications between a two dates range. If theres not a second date,
+    //it  will be taken as today date
+    public async Task<ResponseFormat<List<GetMovementsTotal>?>> GetMovementsTotal(MovementDate data)
+    {
+        //check if the user exists
+        var user = await _us.UserExists(data.UserId);
+        if(user == null)
+            return new ResponseFormat<List<GetMovementsTotal>?>
+            {
+                Success = false,
+                Message = "El usuario no fue encontrado",
+                Data = null
+            };
+
+        //if the final date of the range its null, we use the currentdate
+        DateOnly? finalDate = data.FinalDate;
+        if(finalDate == null)
+            finalDate = DateOnly.FromDateTime(DateTime.Now);
+
+        var totals = await (
+            from m in _conn.Movements
+            where m.UserId == user.Id && m.MovementDate >= data.InitDate && m.MovementDate <= finalDate
+
+            join clas in _conn.Clasifications
+                on m.ClasificationId equals clas.Id
+
+            group new { m, clas } by new
+            {
+                clas.Id,
+                clas.Description,
+                clas.MovementTypeId
+            }
+            into g
+
+            select new GetMovementsTotal
+            {
+                UserId = user.Id,
+                Username = user.Name,
+
+                ClasificationId = g.Key.Id,
+                Clasification = g.Key.Description,
+                MT = g.Key.MovementTypeId,
+
+                Total = g.Sum(x => x.m.Amount)
+            }
+        ).ToListAsync();
+
+        return new ResponseFormat<List<GetMovementsTotal>?>
+        {
+            Success = true,
+            Message = "Datos obtenidos correctamente",
+            Data = totals
+        };
+    }
 }
