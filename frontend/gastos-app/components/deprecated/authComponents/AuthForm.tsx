@@ -1,7 +1,7 @@
 import styles from "./AuthForm.module.css";
 import GeneralButton from "../general/GeneralButton";
 import { useState } from "react";
-import {userAuth} from "../../services/Auth.service.ts";
+import {userAuth} from "../../../services/Auth.service.ts";
 import {useNavigate } from "react-router";
 
 type option = {

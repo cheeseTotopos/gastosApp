@@ -1,5 +1,5 @@
-import AuthHeader from "../components/authComponents/AuthHeader";
-import AuthForm from "../components/authComponents/AuthForm";
+import AuthHeader from "../../components/deprecated/authComponents/AuthHeader";
+import AuthForm from "../../components/deprecated/authComponents/AuthForm";
 import styles from "./Auth.page.module.css";
 import { Link } from "react-router";
 

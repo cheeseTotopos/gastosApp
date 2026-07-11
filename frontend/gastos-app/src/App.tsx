@@ -1,7 +1,7 @@
-import LoginPage from "../pages/Login.page";
-import RegisterPage from "../pages/Register.page";
-import ProtectedRoute from "../components/authComponents/ProtectedRoutes";
-import HomePage from "../pages/Home.page";
+import LoginPage from "../pages/LoginPage";
+import RegisterPage from "../pages/RegisterPage";
+import ProtectedRoute from "../components/deprecated/authComponents/ProtectedRoutes";
+import HomePage from "../pages/deprecated/Home.page";
 import { createBrowserRouter, RouterProvider } from "react-router";
 
 function App() {
@@ -11,7 +11,7 @@ function App() {
     { path: '/', element: <LoginPage /> },
     { path: '/register', element: <RegisterPage /> },
     {
-      path: "home", element: <ProtectedRoute> <HomePage /> </ProtectedRoute>
+      path: "/home", element: <ProtectedRoute> <HomePage /> </ProtectedRoute>
     }
   ]);
 
