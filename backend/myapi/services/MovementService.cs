@@ -80,7 +80,7 @@ public class MovementService(AppDBConection _conn, UserService _us, MovementClas
             finalDate = DateOnly.FromDateTime(DateTime.Now);
 
         var movements = await (from m in  _conn.Movements
-                        where m.UserId == user.Id
+                        where m.UserId == user.Id && m.MovementDate >= data.InitDate && m.MovementDate <= finalDate
                         join clas in _conn.Clasifications on m.ClasificationId equals clas.Id
                         orderby m.MT
                         select new MovementsCompleteDescription
@@ -111,12 +111,12 @@ public class MovementService(AppDBConection _conn, UserService _us, MovementClas
 
     //get the total of the movements groouped by clasifications between a two dates range. If theres not a second date,
     //it  will be taken as today date
-    public async Task<ResponseFormat<List<GetMovementsTotal>?>> GetMovementsTotal(MovementDate data)
+    public async Task<ResponseFormat<GetMovementTotalResponse?>> GetMovementsTotal(MovementDate data)
     {
         //check if the user exists
         var user = await _us.UserExists(data.UserId);
         if(user == null)
-            return new ResponseFormat<List<GetMovementsTotal>?>
+            return new ResponseFormat<GetMovementTotalResponse?>
             {
                 Success = false,
                 Message = "El usuario no fue encontrado",
@@ -145,9 +145,6 @@ public class MovementService(AppDBConection _conn, UserService _us, MovementClas
 
             select new GetMovementsTotal
             {
-                UserId = user.Id,
-                Username = user.Name,
-
                 ClasificationId = g.Key.Id,
                 Clasification = g.Key.Description,
                 MT = g.Key.MovementTypeId,
@@ -156,11 +153,19 @@ public class MovementService(AppDBConection _conn, UserService _us, MovementClas
             }
         ).ToListAsync();
 
-        return new ResponseFormat<List<GetMovementsTotal>?>
+        var response = new GetMovementTotalResponse
+        {
+            UserId = user.Id,
+            Username = user.Name,
+            UserAmount = user.Amount,
+            GroupedMovemets = totals
+        };
+
+        return new ResponseFormat<GetMovementTotalResponse?>
         {
             Success = true,
             Message = "Datos obtenidos correctamente",
-            Data = totals
+            Data = response
         };
     }
 }
