@@ -189,4 +189,53 @@ public class MovementClasificationService(UserService _us, AppDBConection _conn)
             Data = clasifications
         };
     }
+
+    //get the total spended of ALL USER CLASIFICATIONS
+    public async Task<ResponseFormat<List<GetMovementsTotal>?>> GetUserClasificationsTotals(ClasificationListDTO data)
+    {
+        //check if the user exists
+        var user = await _us.UserExists(data.UserId);
+        if(user == null)
+            return new ResponseFormat<List<GetMovementsTotal>?>
+            {
+                Success = false,
+                Message = "El usuario no fue encontrado",
+                Data = null
+            };
+
+        var totals = await (
+            from clas in _conn.Clasifications
+            where clas.UserRegId == user.Id
+
+            join m in _conn.Movements on clas.Id equals m.ClasificationId into clasifications
+            from cs in clasifications.DefaultIfEmpty()
+
+            group cs by new
+            {
+                clas.Id,
+                clas.Description,
+                clas.MovementTypeId
+            }
+            into g
+
+            select new GetMovementsTotal
+            {
+                UserId = user.Id,
+                Username = user.Name,
+
+                ClasificationId = g.Key.Id,
+                Clasification = g.Key.Description,
+                MT = g.Key.MovementTypeId,
+
+                Total = g.Sum(x => x.Amount)
+            }
+        ).ToListAsync();
+
+        return new ResponseFormat<List<GetMovementsTotal>?>
+        {
+            Success = true,
+            Message = "Datos obtenidos correctamente",
+            Data = totals
+        };
+    }
 }

@@ -1,7 +1,7 @@
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
-import ProtectedRoute from "../components/deprecated/authComponents/ProtectedRoutes";
-import HomePage from "../pages/deprecated/Home.page";
+import ProtectedRoute from "../components/auth/ProtectedRoutes";
+import HomePage from "../pages/Home.page";
 import { createBrowserRouter, RouterProvider } from "react-router";
 
 function App() {

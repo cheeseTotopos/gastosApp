@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration.UserSecrets;
 
 public class MovementService(AppDBConection _conn, UserService _us, MovementClasificationService _cs)
 {
@@ -163,4 +164,5 @@ public class MovementService(AppDBConection _conn, UserService _us, MovementClas
             Data = totals
         };
     }
+
 }

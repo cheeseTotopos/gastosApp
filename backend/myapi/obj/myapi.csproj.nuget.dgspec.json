@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Humberto\\Desktop\\gastosApp\\backend\\myapi\\myapi.csproj": {}
+    "C:\\Users\\M2606034\\Desktop\\gastosApp\\gastosApp\\backend\\myapi\\myapi.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Humberto\\Desktop\\gastosApp\\backend\\myapi\\myapi.csproj": {
+    "C:\\Users\\M2606034\\Desktop\\gastosApp\\gastosApp\\backend\\myapi\\myapi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Humberto\\Desktop\\gastosApp\\backend\\myapi\\myapi.csproj",
+        "projectUniqueName": "C:\\Users\\M2606034\\Desktop\\gastosApp\\gastosApp\\backend\\myapi\\myapi.csproj",
         "projectName": "myapi",
-        "projectPath": "C:\\Users\\Humberto\\Desktop\\gastosApp\\backend\\myapi\\myapi.csproj",
-        "packagesPath": "C:\\Users\\Humberto\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Humberto\\Desktop\\gastosApp\\backend\\myapi\\obj\\",
+        "projectPath": "C:\\Users\\M2606034\\Desktop\\gastosApp\\gastosApp\\backend\\myapi\\myapi.csproj",
+        "packagesPath": "C:\\Users\\M2606034\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\M2606034\\Desktop\\gastosApp\\gastosApp\\backend\\myapi\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Humberto\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\M2606034\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -87,7 +87,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.416/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.423/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

@@ -33,7 +33,7 @@ public class MovementClasificationController(MovementClasificationService _cs): 
     [HttpPostAttribute("getclasifications")]
     public async Task<IActionResult> GetClasifications([FromBody] ClasificationListDTO data)
     {
-        var response = await _cs.GetUserClasifications(data);
+        var response = await _cs.GetUserClasificationsTotals(data);
         if(response.Success == false)
             return Unauthorized(response.Message);
 
