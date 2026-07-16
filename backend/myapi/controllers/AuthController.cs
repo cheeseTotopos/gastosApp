@@ -27,8 +27,7 @@ public class AuthController(LoginService _loginService, TokenConstructor _tc) : 
         return Ok(new {
             token = token,
             Sucess = user.Success,
-            Message = user.Message,
-            Data = user.Data
+            Message = user.Message
         });
     }
 
@@ -45,8 +44,7 @@ public class AuthController(LoginService _loginService, TokenConstructor _tc) : 
         return Ok(new {
             token = token,
             Succes = user.Success,
-            Message = user.Message,
-            Data = user.Data
+            Message = user.Message
         });
     }
 }

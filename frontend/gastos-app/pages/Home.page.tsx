@@ -7,14 +7,24 @@ import { useState, useEffect } from "react";
 import ClasificationsTable from "../components/clasifications/clasification-table";
 import AddClasificationForm from "../components/clasifications/addClasification-form";
 
+import {getClasifications} from "../services/Clasifications.service";
+
 function HomePage(){
 
     const [openAddModal, setOpenAddModal] = useState(false);
     const [clasifications, setClasifications] = useState([]);
     
-    /*useEffect(()=>{
+    useEffect(()=>{
+        async function loadClassifications(){
 
-    }, []);*/
+            const response = await getClasifications();
+            console.log(response);
+            if(response)
+                setClasifications(response.data.data);
+        }
+
+        loadClassifications();
+    }, []);
 
     //the radio options
     const navoptions: CheckboxGroupProps<string>['options'] = [
@@ -25,24 +35,7 @@ function HomePage(){
     //useNavigate its not the function that navigates, its the function that return a function that navigates
     const navigate = useNavigate();
 
-    type movementclasification = {
-        id: string;
-        description: string;
-        mt: 1 | 2 | 3;
-    };
-
-    //temporaly array to simulate the backend response
-    const movarray : movementclasification[] = [
-        {"id" : "1", "description" : "Gastos hormiga", "mt" : 1},
-        {"id" : "2", "description" : "Gasolina", "mt" : 1},
-        {"id" : "3", "description" : "Sueldo", "mt" : 2},
-        {"id" : "1", "description" : "Gastos hormiga", "mt" : 1},
-        {"id" : "2", "description" : "Gasolina", "mt" : 1},
-        {"id" : "3", "description" : "Sueldo", "mt" : 2},
-    ];
-
     function logout(e: any){
-        console.log(e);
         //first, clean the localStorage cookie sesion
         localStorage.removeItem("token");
         navigate("/");
@@ -90,7 +83,7 @@ function HomePage(){
 
             <Flex justify="center" gap={"large"}>
 
-                <ClasificationsTable movarray = {movarray} />
+                <ClasificationsTable clasarray = {clasifications} />
                 
             </Flex>
         </Flex>

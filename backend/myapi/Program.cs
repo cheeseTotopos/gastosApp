@@ -14,6 +14,7 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<MovementClasificationService>();
 builder.Services.AddScoped<MovementService>();
 builder.Services.AddScoped<TokenConstructor>();
+builder.Services.AddScoped<TokenService>();
 
 
 builder.Services.AddEndpointsApiExplorer();

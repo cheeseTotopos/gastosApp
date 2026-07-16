@@ -13,13 +13,27 @@ export async function login(username: string, pwd: string){
     }
 }
 
-export async function register(username: string, pwd: string, amount:number, bd: string){
+type userreg = {
+    username: string, 
+    pwd: string, 
+    amount:number, 
+    bd: string
+};
+
+export async function register(user: userreg){
 
     let route = "http://localhost:5018/auth/register";
 
     try {
         
-        const response = await axios.post(route, {username, pwd, bd, amount});
+        const response = await axios.post(route, 
+            {
+                Username: user.username,
+                Pwd: user.pwd,
+                BD: user.bd,
+                Amount: user.amount
+            });
+
         return response.data;
     } catch (error) {
         return false;

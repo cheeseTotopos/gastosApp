@@ -191,10 +191,10 @@ public class MovementClasificationService(UserService _us, AppDBConection _conn)
     }
 
     //get the total spended of ALL USER CLASIFICATIONS
-    public async Task<ResponseFormat<List<GetMovementsTotal>?>> GetUserClasificationsTotals(ClasificationListDTO data)
+    public async Task<ResponseFormat<List<GetMovementsTotal>?>> GetUserClasificationsTotals(int userid)
     {
         //check if the user exists
-        var user = await _us.UserExists(data.UserId);
+        var user = await _us.UserExists(userid);
         if(user == null)
             return new ResponseFormat<List<GetMovementsTotal>?>
             {

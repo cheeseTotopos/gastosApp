@@ -1,27 +1,33 @@
-import {Card, Button} from "antd";
+import {Card, Button, Empty, Typography} from "antd";
 
 type movementclasification = {
-    id: string,
-    description: string,
+    clasificationId: number,
+    clasification: string,
     mt: 1 | 2 | 3
 };
 
 type props = {
-    movarray : movementclasification[]
+    clasarray : movementclasification[]
 }
 
-function ClasificationsTable({movarray}: props){
+function ClasificationsTable({clasarray}: props){
 
     const gridstyle: React.CSSProperties = {
     textAlign: 'center',
     };
 
+    if(clasarray.length == 0){
+        return (
+            <Empty description={<Typography.Text>Sin clasificaciones</Typography.Text>}></Empty>
+        );
+    }
+
     return (
         <Card>
             {
-                movarray.map(x => {
-                    return <Card.Grid style={gridstyle}> 
-                        {x.description }
+                clasarray.map(x => {
+                    return <Card.Grid style={gridstyle} key={x.clasificationId}> 
+                        {x.clasification}
                         <div>
                             <Button type="text" variant="text" color="primary">...</Button>
                         </div>

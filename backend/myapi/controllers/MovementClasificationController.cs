@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("clasifications")]
-public class MovementClasificationController(MovementClasificationService _cs): ControllerBase
+public class MovementClasificationController(MovementClasificationService _cs, TokenService _ts): ControllerBase
 {
     [Authorize]
     [HttpPostAttribute("add")]
@@ -31,9 +31,20 @@ public class MovementClasificationController(MovementClasificationService _cs): 
 
     [Authorize]
     [HttpPostAttribute("getclasifications")]
-    public async Task<IActionResult> GetClasifications([FromBody] ClasificationListDTO data)
+    public async Task<IActionResult> GetClasifications()
     {
-        var response = await _cs.GetUserClasificationsTotals(data);
+        //from where User property appears? 
+        //When extending a class from ControllerBase, the ControllerBase have a a property named User of the tyep ClaimsPrincipal. 
+        //the User property gains its value when the middleware (the process that intercepts the query before it arrives to the controller, that in our case is [Authorize])
+        //validates the token.
+
+        foreach (var claim in User.Claims)
+        {
+            Console.WriteLine($"{claim.Type}: {claim.Value}");
+        }
+
+        int userid = _ts.GetUserId(User);
+        var response = await _cs.GetUserClasificationsTotals(userid);
         if(response.Success == false)
             return Unauthorized(response.Message);
 

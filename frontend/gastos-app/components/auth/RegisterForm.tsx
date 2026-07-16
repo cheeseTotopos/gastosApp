@@ -78,7 +78,7 @@ function RegisterForm(){
             return;
         }
 
-        const response = await register(user.username, user.pwd, user.amount, user.bd);
+        const response = await register(user);
         
         localStorage.setItem("token", response.token);
         nav("/home");
