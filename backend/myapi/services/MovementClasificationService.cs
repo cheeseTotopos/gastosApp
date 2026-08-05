@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 public class MovementClasificationService(UserService _us, AppDBConection _conn)
 {
-    public async Task<ResponseFormat<MovementClasification?>> Add(AddClasification data)
+    public async Task<ResponseFormat<MovementClasification?>> Add(int userId, AddClasification data)
     {
         //check if user exists
-        var user = await _us.UserExists(data.UserId);
+        var user = await _us.UserExists(userId);
         if (user == null)
             return new ResponseFormat<MovementClasification?>
             {
@@ -27,7 +27,7 @@ public class MovementClasificationService(UserService _us, AppDBConection _conn)
             };
 
         //check if the clasification name already exists
-        bool nameAlreadyExist = await UserClasificationAlreadyExists(data.Description.Trim(), data.UserId);
+        bool nameAlreadyExist = await UserClasificationAlreadyExists(data.Description.Trim(), userId);
         if(nameAlreadyExist == true)
             return new ResponseFormat<MovementClasification?>
             {
@@ -39,7 +39,7 @@ public class MovementClasificationService(UserService _us, AppDBConection _conn)
         {
             MovementTypeId = data.MT,
             Description = data.Description.Trim(),
-            UserRegId = data.UserId
+            UserRegId = userId
         };
 
         await _conn.Clasifications.AddAsync(clasification);

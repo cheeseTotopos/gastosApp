@@ -37,13 +37,13 @@ function AuthForm(){
 
     function buildModalConfig(message: string){
         return {
-        title: "Error",
-        content: (
-            <>
-                <p>{message}</p>
-            </>
-        )
-    };
+            title: "Error",
+            content: (
+                <>
+                    <p>{message}</p>
+                </>
+            )
+        };
     }
 
     async function onclick(){

@@ -9,7 +9,9 @@ public class MovementClasificationController(MovementClasificationService _cs, T
     [HttpPostAttribute("add")]
     public async Task<IActionResult> Add([FromBody] AddClasification data)
     {
-        var result = await _cs.Add(data);
+
+        int userId = _ts.GetUserId(User);
+        var result = await _cs.Add(userId, data);
         if(result.Success == false)
             return Unauthorized(result.Message);
 
@@ -37,11 +39,6 @@ public class MovementClasificationController(MovementClasificationService _cs, T
         //When extending a class from ControllerBase, the ControllerBase have a a property named User of the tyep ClaimsPrincipal. 
         //the User property gains its value when the middleware (the process that intercepts the query before it arrives to the controller, that in our case is [Authorize])
         //validates the token.
-
-        foreach (var claim in User.Claims)
-        {
-            Console.WriteLine($"{claim.Type}: {claim.Value}");
-        }
 
         int userid = _ts.GetUserId(User);
         var response = await _cs.GetUserClasificationsTotals(userid);

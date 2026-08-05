@@ -22,3 +22,23 @@ export async function getClasifications(){
         return false;
     }
 } 
+
+export async function apiAddClasification(mt: 1 | 2, description: string){
+    let path = "http://localhost:5018/clasifications/add";
+
+    try {
+        let response = await axios.post(
+            path,
+            {Description: description, MT: mt}, // body
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            }
+        );
+        
+        return response;
+    } catch (error) {
+        
+    }
+}

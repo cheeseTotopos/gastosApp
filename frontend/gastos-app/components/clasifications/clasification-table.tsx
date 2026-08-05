@@ -12,10 +12,6 @@ type props = {
 
 function ClasificationsTable({clasarray}: props){
 
-    const gridstyle: React.CSSProperties = {
-    textAlign: 'center',
-    };
-
     if(clasarray.length == 0){
         return (
             <Empty description={<Typography.Text>Sin clasificaciones</Typography.Text>}></Empty>
@@ -26,6 +22,13 @@ function ClasificationsTable({clasarray}: props){
         <Card>
             {
                 clasarray.map(x => {
+                    
+                    const gridstyle: React.CSSProperties = {
+                        textAlign: 'center',
+                        fontSize: "bold",
+                        color: x.mt == 1 ? "#d81d36" : "#108f0c"
+                    };
+
                     return <Card.Grid style={gridstyle} key={x.clasificationId}> 
                         {x.clasification}
                         <div>

@@ -1,41 +1,83 @@
-import { Flex, Button, Radio, Input, Modal } from "antd";
+import { Flex, Button, Radio, Input, Modal, Form, Select } from "antd";
 import { PoweroffOutlined } from '@ant-design/icons';
 import type { CheckboxGroupProps } from 'antd/es/checkbox';
 import { useNavigate } from "react-router";
 import { useState, useEffect } from "react";
 
 import ClasificationsTable from "../components/clasifications/clasification-table";
-import AddClasificationForm from "../components/clasifications/addClasification-form";
 
 import {getClasifications} from "../services/Clasifications.service";
+import {apiAddClasification} from "../services/Clasifications.service";
 
 function HomePage(){
 
+    type clasificationFromUseEffect = {
+        clasification: string;
+        clasificationId: number;
+        mt: 1 | 2;
+        total: number;
+        userId: number;
+        username: string;
+    };
+
+    const nav = useNavigate();
+
     const [openAddModal, setOpenAddModal] = useState(false);
-    const [clasifications, setClasifications] = useState([]);
+    const [clasifications, setClasifications] = useState<clasificationFromUseEffect[]>([]);
     
-    useEffect(()=>{
-        async function loadClassifications(){
+    type Classificaton = {
+        mt: 1 | 2 | null;
+        description: string
+    };
 
-            const response = await getClasifications();
-            console.log(response);
-            if(response)
-                setClasifications(response.data.data);
-        }
+    //the clasification object for creating a new clasification
+    const [clasification, setClasification] = useState<Classificaton>({
+        mt: null,
+        description: ""
+    });
 
-        loadClassifications();
-    }, []);
+    const options = [
+        {value: 1, label: "Gasto"},
+        {value: 2, label: "Ingreso"}
+    ];
 
     //the radio options
     const navoptions: CheckboxGroupProps<string>['options'] = [
         { label: 'Clasificaciones', value: 'clasifications' },
         { label: 'Movimientos', value: 'movements' },
     ];
+    
+    useEffect(()=>{
+
+        loadClassifications();
+    }, []);
+
+    async function loadClassifications(){
+
+        const response = await getClasifications();
+        
+        if(response){
+            setClasifications(response.data.data);
+        }
+        else {
+            localStorage.removeItem("token");
+            nav("/");
+        }
+    }
+
+    const selectMT = (value: 1 | 2) =>{
+        setClasification({...clasification, mt : value});
+    };
+
+    //function to change the description of the new clasification
+    const changeClasDescription = (e: any) =>{
+        setClasification({...clasification, description : e.target.value});
+    };
 
     //useNavigate its not the function that navigates, its the function that return a function that navigates
     const navigate = useNavigate();
 
-    function logout(e: any){
+    function logout(){
         //first, clean the localStorage cookie sesion
         localStorage.removeItem("token");
         navigate("/");
@@ -46,7 +88,36 @@ function HomePage(){
     };
 
     const onCloseAddModal = () =>{
+
+        setClasification({description : "", mt : null});
         setOpenAddModal(false);
+    };
+
+    const [errorModal,  contextHolder] = Modal.useModal();
+    async function addClasification(){
+        
+        if(clasification.mt == null){
+            errorModal.error({title: "Error", content: <p>Seleccione un tipo de movimiento</p>});
+            return;
+        }
+        if(clasification.description == ""){
+            errorModal.error({title: "Error", content: <p>La descripción no puede ser vacía</p>});
+            return;
+        }
+    
+        //check if the name of the new clasification does not already exists
+        let duplicatedName: boolean = clasifications.some(x => clasification.description == x.clasification);
+        if(duplicatedName){
+            errorModal.error({title: "Error", content: <p>Ya existe una clasificación con este nombre</p>});
+            return;
+        }
+        
+        let response = await apiAddClasification(clasification.mt, clasification.description);
+        if(response){
+
+            onCloseAddModal();
+            loadClassifications();
+        }
     };
 
     return (
@@ -75,10 +146,22 @@ function HomePage(){
 
             <Flex justify="center" gap={"small"}>
                 <Input.Search placeholder="Categoría" style={{ width: 200 }}/>
-                <Button type="default"  color="purple" onClick={onOpenAddModal}>Añadir categoría</Button>
-                <Modal title="Añadir clasificación" open={openAddModal} onCancel={onCloseAddModal}>
-                    <AddClasificationForm/>
+                <Button type="default"  color="purple" onClick={onOpenAddModal}>Añadir clasificación</Button>
+                <Modal title="Añadir clasificación" open={openAddModal} onCancel={onCloseAddModal} onOk={addClasification}>
+
+                    <Form labelCol={{span: 8}} labelAlign='left'>
+                        <Form.Item label="Tipo de movimiento">
+                            <Select options={options} onChange={selectMT} value={clasification.mt}></Select>
+                        </Form.Item>
+                        
+                        <Form.Item label="Descripción">
+                            <Input onChange={changeClasDescription} value={clasification.description}/>
+                        </Form.Item>
+                        
+                    </Form>
+
                 </Modal>
+                {contextHolder}
             </Flex>
 
             <Flex justify="center" gap={"large"}>
