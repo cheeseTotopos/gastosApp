@@ -3,7 +3,8 @@ import {Card, Button, Empty, Typography} from "antd";
 type movementclasification = {
     clasificationId: number,
     clasification: string,
-    mt: 1 | 2 | 3
+    mt: 1 | 2 | 3,
+    color: string
 };
 
 type props = {
@@ -26,7 +27,8 @@ function ClasificationsTable({clasarray}: props){
                     const gridstyle: React.CSSProperties = {
                         textAlign: 'center',
                         fontSize: "bold",
-                        color: x.mt == 1 ? "#d81d36" : "#108f0c"
+                        color: "white",
+                        backgroundColor: `${x.color}`
                     };
 
                     return <Card.Grid style={gridstyle} key={x.clasificationId}> 

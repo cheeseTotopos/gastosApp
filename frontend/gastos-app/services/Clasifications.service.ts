@@ -23,13 +23,13 @@ export async function getClasifications(){
     }
 } 
 
-export async function apiAddClasification(mt: 1 | 2, description: string){
+export async function apiAddClasification(mt: 1 | 2, description: string, color: string){
     let path = "http://localhost:5018/clasifications/add";
 
     try {
         let response = await axios.post(
             path,
-            {Description: description, MT: mt}, // body
+            {Description: description, MT: mt, Color: color}, // body
             {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("token")}`

@@ -39,7 +39,8 @@ public class MovementClasificationService(UserService _us, AppDBConection _conn)
         {
             MovementTypeId = data.MT,
             Description = data.Description.Trim(),
-            UserRegId = userId
+            UserRegId = userId,
+            Color = data.Color
         };
 
         await _conn.Clasifications.AddAsync(clasification);
@@ -214,7 +215,8 @@ public class MovementClasificationService(UserService _us, AppDBConection _conn)
             {
                 clas.Id,
                 clas.Description,
-                clas.MovementTypeId
+                clas.MovementTypeId,
+                clas.Color
             }
             into g
 
@@ -226,6 +228,7 @@ public class MovementClasificationService(UserService _us, AppDBConection _conn)
                 ClasificationId = g.Key.Id,
                 Clasification = g.Key.Description,
                 MT = g.Key.MovementTypeId,
+                Color = g.Key.Color,
 
                 Total = g.Sum(x => x.Amount)
             }

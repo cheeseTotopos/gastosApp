@@ -1,10 +1,11 @@
-import { Flex, Button, Radio, Input, Modal, Form, Select } from "antd";
+import { Flex, Button, Radio, Input, Modal, Form, Select, ColorPicker, ColorPickerProps, GetProp } from "antd";
 import { PoweroffOutlined } from '@ant-design/icons';
 import type { CheckboxGroupProps } from 'antd/es/checkbox';
 import { useNavigate } from "react-router";
 import { useState, useEffect } from "react";
 
 import ClasificationsTable from "../components/clasifications/clasification-table";
+import PieChart from "../components/PieChart";
 
 import {getClasifications} from "../services/Clasifications.service";
 import {apiAddClasification} from "../services/Clasifications.service";
@@ -18,6 +19,7 @@ function HomePage(){
         total: number;
         userId: number;
         username: string;
+        color: string;
     };
 
     const nav = useNavigate();
@@ -35,6 +37,8 @@ function HomePage(){
         mt: null,
         description: ""
     });
+
+    const [addClasColor, setAddClasColor] = useState<string | null>("");
 
     const options = [
         {value: 1, label: "Gasto"},
@@ -91,6 +95,11 @@ function HomePage(){
 
         setClasification({description : "", mt : null});
         setOpenAddModal(false);
+        setAddClasColor(null);
+    };
+
+    const changeAddclasColor: ColorPickerProps["onChange"] = (color) => {
+        setAddClasColor(color.toHexString());
     };
 
     const [errorModal,  contextHolder] = Modal.useModal();
@@ -104,6 +113,11 @@ function HomePage(){
             errorModal.error({title: "Error", content: <p>La descripción no puede ser vacía</p>});
             return;
         }
+
+        if(addClasColor == "" || addClasColor == null){
+            errorModal.error({title: "Error", content: <p>Seleccione un color para la clasifición</p>});
+            return;
+        }
     
         //check if the name of the new clasification does not already exists
         let duplicatedName: boolean = clasifications.some(x => clasification.description == x.clasification);
@@ -112,7 +126,8 @@ function HomePage(){
             return;
         }
         
-        let response = await apiAddClasification(clasification.mt, clasification.description);
+        
+        let response = await apiAddClasification(clasification.mt, clasification.description, addClasColor);
         if(response){
 
             onCloseAddModal();
@@ -142,20 +157,27 @@ function HomePage(){
 
             </Flex>
 
-            <span>grafico del dinero</span>
+            <div style={{height: 300}}>
+                <PieChart clasifications={clasifications}></PieChart>
+            </div>
+
 
             <Flex justify="center" gap={"small"}>
-                <Input.Search placeholder="Categoría" style={{ width: 200 }}/>
+                <Input.Search placeholder="no hace la busqueda" style={{ width: 200 }}/>
                 <Button type="default"  color="purple" onClick={onOpenAddModal}>Añadir clasificación</Button>
                 <Modal title="Añadir clasificación" open={openAddModal} onCancel={onCloseAddModal} onOk={addClasification}>
 
-                    <Form labelCol={{span: 8}} labelAlign='left'>
+                    <Form labelCol={{span: 10}} labelAlign='left'>
                         <Form.Item label="Tipo de movimiento">
                             <Select options={options} onChange={selectMT} value={clasification.mt}></Select>
                         </Form.Item>
                         
                         <Form.Item label="Descripción">
                             <Input onChange={changeClasDescription} value={clasification.description}/>
+                        </Form.Item>
+
+                        <Form.Item label = "Color de la clasificación">
+                            <ColorPicker value={addClasColor} onChange={changeAddclasColor}></ColorPicker>
                         </Form.Item>
                         
                     </Form>

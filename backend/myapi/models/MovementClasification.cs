@@ -16,6 +16,9 @@ public class MovementClasification()
     //this string.empty is for avoid warnings. We initialize them as a empty string
     public string Description {set; get;} = string.Empty;
 
+    [Column("Color")]
+    public string? Color {get; set;}
+
     [ForeignKey("User")]
     public int UserRegId {get; set;}
 

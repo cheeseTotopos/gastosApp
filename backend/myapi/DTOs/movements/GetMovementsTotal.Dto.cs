@@ -6,4 +6,5 @@ public class GetMovementsTotal
     public string Clasification {get; set;} = string.Empty;
     public int MT {get; set;}
     public decimal Total {get; set;}
+    public string? Color {get; set;}
 }
