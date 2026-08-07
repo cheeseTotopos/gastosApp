@@ -1,11 +1,10 @@
-import { Flex, Button, Radio, Input, Modal, Form, Select, ColorPicker, ColorPickerProps, GetProp } from "antd";
-import { PoweroffOutlined } from '@ant-design/icons';
-import type { CheckboxGroupProps } from 'antd/es/checkbox';
+import { Flex, Button, Input, Modal, Form, Select, ColorPicker, Typography } from "antd";
+import type { ColorPickerProps } from "antd";
 import { useNavigate } from "react-router";
 import { useState, useEffect } from "react";
 
 import ClasificationsTable from "../components/clasifications/clasification-table";
-import PieChart from "../components/PieChart";
+import PieChart from "../components/clasifications/PieChart";
 
 import {getClasifications} from "../services/Clasifications.service";
 import {apiAddClasification} from "../services/Clasifications.service";
@@ -25,6 +24,7 @@ function HomePage(){
     const nav = useNavigate();
 
     const [openAddModal, setOpenAddModal] = useState(false);
+    const [userAmount, setUserAmount] = useState<number>();
     const [clasifications, setClasifications] = useState<clasificationFromUseEffect[]>([]);
     
     type Classificaton = {
@@ -45,11 +45,7 @@ function HomePage(){
         {value: 2, label: "Ingreso"}
     ];
 
-    //the radio options
-    const navoptions: CheckboxGroupProps<string>['options'] = [
-        { label: 'Clasificaciones', value: 'clasifications' },
-        { label: 'Movimientos', value: 'movements' },
-    ];
+    const {Title} = Typography;
     
     useEffect(()=>{
 
@@ -61,7 +57,8 @@ function HomePage(){
         const response = await getClasifications();
         
         if(response){
-            setClasifications(response.data.data);
+            setClasifications(response.data.data.clasifications);
+            setUserAmount(response.data.data.userAmount);
         }
         else {
             localStorage.removeItem("token");
@@ -78,14 +75,6 @@ function HomePage(){
         setClasification({...clasification, description : e.target.value});
     };
 
-    //useNavigate its not the function that navigates, its the function that return a function that navigates
-    const navigate = useNavigate();
-
-    function logout(){
-        //first, clean the localStorage cookie sesion
-        localStorage.removeItem("token");
-        navigate("/");
-    }
 
     function onOpenAddModal(){
         setOpenAddModal(true);
@@ -135,26 +124,13 @@ function HomePage(){
         }
     };
 
+
     return (
         <Flex justify="center" vertical gap="large">
             
-            <Flex justify="space-between">
-                
-                <Button type="primary"
-                        icon={<PoweroffOutlined/>}
-                        color="danger"
-                        variant="filled"
-                        onClick={logout}
-                >Cerrar sesión</Button>
 
-                <Radio.Group
-                    block
-                    options={navoptions}
-                    defaultValue="clasifications"
-                    optionType="button"
-                    buttonStyle="solid"
-                />
-
+            <Flex justify="center">
+                <Title level={4}>Dinero actual: {userAmount}</Title>
             </Flex>
 
             <div style={{height: 300}}>
@@ -163,7 +139,7 @@ function HomePage(){
 
 
             <Flex justify="center" gap={"small"}>
-                <Input.Search placeholder="no hace la busqueda" style={{ width: 200 }}/>
+                <Input.Search placeholder="no hace la busqueda :v" style={{ width: 200 }}/>
                 <Button type="default"  color="purple" onClick={onOpenAddModal}>Añadir clasificación</Button>
                 <Modal title="Añadir clasificación" open={openAddModal} onCancel={onCloseAddModal} onOk={addClasification}>
 

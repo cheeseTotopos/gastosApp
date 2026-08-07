@@ -192,12 +192,12 @@ public class MovementClasificationService(UserService _us, AppDBConection _conn)
     }
 
     //get the total spended of ALL USER CLASIFICATIONS
-    public async Task<ResponseFormat<List<GetMovementsTotal>?>> GetUserClasificationsTotals(int userid)
+    public async Task<ResponseFormat<ClasificationsTotalResponse?>> GetUserClasificationsTotals(int userid)
     {
         //check if the user exists
         var user = await _us.UserExists(userid);
         if(user == null)
-            return new ResponseFormat<List<GetMovementsTotal>?>
+            return new ResponseFormat<ClasificationsTotalResponse?>
             {
                 Success = false,
                 Message = "El usuario no fue encontrado",
@@ -234,11 +234,18 @@ public class MovementClasificationService(UserService _us, AppDBConection _conn)
             }
         ).ToListAsync();
 
-        return new ResponseFormat<List<GetMovementsTotal>?>
+
+        var response = new ClasificationsTotalResponse
+        {
+            Clasifications = totals,
+            UserAmount = user.Amount
+        }; 
+
+        return new ResponseFormat<ClasificationsTotalResponse?>
         {
             Success = true,
             Message = "Datos obtenidos correctamente",
-            Data = totals
+            Data = response
         };
     }
 }
