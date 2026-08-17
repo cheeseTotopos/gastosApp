@@ -43,7 +43,7 @@ public class UserService(AppDBConection _conn)
         return user;
     }
 
-    //decrease the user amount. This is used when a user create a movement. Return true if the user amount is modified correctly.
+    //decrease or increase the user amount. This is used when a user create a movement. Return true if the user amount is modified correctly.
     //False in other case
     public async Task AffectAmount(int mt, decimal quantity, int userid)
     {
@@ -59,5 +59,13 @@ public class UserService(AppDBConection _conn)
                 
             await _conn.SaveChangesAsync();
         }
+    }
+
+    //decrease or increase the user amount JUST IN THE OBJECT, so the method that calls this method can decide when save the changes. This method does not need the movement type, just the quantity, because it can come as a negative or positive number
+    public void AffectUserObjectAmount(decimal quantity, User user)
+    {
+        if (user != null)
+            user.Amount += quantity;
+        
     }
 }

@@ -165,4 +165,65 @@ public class MovementService(AppDBConection _conn, UserService _us, MovementClas
         };
     }
 
+    public async Task<ResponseFormat<int>> AddMultiple(int userid, AddMultiple movements)
+    {
+        //validate if user exists
+        var user = await _us.UserExists(userid);
+        if(user == null)
+            return new ResponseFormat<int>
+            {
+                Success = false,
+                Message = "El usuario no fue encontrado",
+                Data = 0
+            };
+
+        //variables to getting controll of the quantities that are gonna be added or substracted from the user amount
+        decimal expensesSummatory = 0;
+        decimal invoicesSummatory = 0;
+
+        try
+        {
+            //for each movement insert into the db
+            foreach (var mov in movements.Movements)
+            {
+                var movtoadd = new Movement
+                {
+                    MovementDate = mov.Date,
+                    MT = mov.MT,
+                    Amount = mov.Amount,
+                    Description = mov.Description,
+                    UserId = userid,
+                    ClasificationId = mov.ClasificationId,
+                };
+
+                if (movtoadd.MT == 1)
+                    expensesSummatory += movtoadd.Amount;
+                else
+                    invoicesSummatory += movtoadd.Amount;
+
+                //add the movement
+                await _conn.Movements.AddAsync(movtoadd);
+            }
+
+            //increase or decrease the user amount
+            _us.AffectUserObjectAmount(invoicesSummatory - expensesSummatory, user);
+            //save in the database
+            await _conn.SaveChangesAsync();
+
+
+            return new ResponseFormat<int> {
+                Success = true,
+                Message = "Movimientos añadidos con éxito",
+                Data = 1
+            };
+        }
+        catch
+        {
+            return new ResponseFormat<int> {
+                Success = false,
+                Message = "Error insertando los movimientos",
+                Data = 0
+            };
+        }
+    }
 }

@@ -10,7 +10,7 @@ public class MovementBase
     [Required]
     public decimal Amount {get; set;}
     [Required]
-    public string Description {get; set;} = String.Empty;
+    public string Description {get; set;} = string.Empty;
     [Required]
     public int UserId {get; set;}
     [Required]

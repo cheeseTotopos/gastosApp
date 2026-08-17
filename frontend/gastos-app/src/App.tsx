@@ -4,6 +4,8 @@ import ProtectedRoute from "../components/auth/ProtectedRoutes";
 import HomePage from "../pages/Home.page";
 import MovementsPage from "../pages/MovementsPage";
 import Layout from "../pages/Layout";
+import AddMovement from "../components/movements/addMovement"
+
 import { createBrowserRouter, RouterProvider } from "react-router";
 
 function App() {
@@ -23,7 +25,11 @@ function App() {
           path: "/home", element:<HomePage />
         },
         {
-          path: "/movements", element: <MovementsPage/>
+          path: "/movements", 
+          element: <MovementsPage/>,
+          children: [
+            { path: "add", element: <AddMovement/>}
+          ]
         }
       ]
     }
