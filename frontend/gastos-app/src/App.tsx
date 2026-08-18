@@ -4,7 +4,9 @@ import ProtectedRoute from "../components/auth/ProtectedRoutes";
 import HomePage from "../pages/Home.page";
 import MovementsPage from "../pages/MovementsPage";
 import Layout from "../pages/Layout";
-import AddMovement from "../components/movements/addMovement"
+import AddMovement from "../components/movements/addMovement";
+import QueryMovements from "../components/movements/queryMovements";
+import InvoicesVSExpenses from "../components/movements/graphs/invoicesVSexpenses";
 
 import { createBrowserRouter, RouterProvider } from "react-router";
 
@@ -28,7 +30,14 @@ function App() {
           path: "/movements", 
           element: <MovementsPage/>,
           children: [
-            { path: "add", element: <AddMovement/>}
+            { path: "add", element: <AddMovement/>},
+            { 
+              path: "query", 
+              element: <QueryMovements/>,
+              children: [
+                {path: "exp_vs_inv", element: <InvoicesVSExpenses/>}
+              ]
+            },
           ]
         }
       ]
