@@ -29,7 +29,6 @@ function QueryMovements(){
         );
 
         const path = selectedOption?.path;
-        console.log(path);
         setSelection(e.target.value);
         nav(`${path}`);
     }

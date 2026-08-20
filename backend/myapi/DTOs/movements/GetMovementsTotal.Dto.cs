@@ -7,4 +7,5 @@ public class GetMovementsTotal
     public int MT {get; set;}
     public decimal Total {get; set;}
     public string? Color {get; set;}
+    public int? Month {get; set;}
 }

@@ -1,6 +1,6 @@
 function InvoicesVSExpenses(){
     return (
-        <p>invoices vs expenses</p>
+        <p>Gastos vs ingresos</p>
     );
 }
 
