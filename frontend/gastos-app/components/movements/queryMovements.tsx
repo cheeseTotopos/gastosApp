@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 
 function QueryMovements(){
 
-    const [selection, setSelection] = useState();
+    const [selection, setSelection] = useState<number | undefined>();
 
     type OptionType = {
         value: number,
@@ -44,7 +44,7 @@ function QueryMovements(){
 
                 </Splitter.Panel>
                 <Splitter.Panel>
-                    <DisplayGraphSelection/>
+                    <DisplayGraphSelection disableYearBtn={selection}/>
                 </Splitter.Panel>
             </Splitter>
         </Flex>

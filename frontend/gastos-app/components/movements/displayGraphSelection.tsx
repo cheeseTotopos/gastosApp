@@ -4,7 +4,13 @@ import type { MenuProps } from 'antd';
 import { useState } from "react";
 import { Outlet } from "react-router";
 
-function DisplayGraphSelection(){
+
+type DisplayGraphSelectionProps = {
+    disableYearBtn: number | undefined;
+};
+
+
+function DisplayGraphSelection({disableYearBtn}: DisplayGraphSelectionProps){
 
     const [yearSelected, setYearSelected] = useState("");
 
@@ -31,10 +37,13 @@ function DisplayGraphSelection(){
         <Flex align="center" vertical>
             <Flex style={{marginBottom: "30px"}}>
                 <Input placeholder="Seleccione año  --->" disabled value={yearSelected}/>
-                <Menu items={items} onClick={selectYear}/>
+                <Menu items={items} onClick={selectYear} disabled={disableYearBtn == undefined ? true : false}/>
             </Flex>
 
-            <Outlet></Outlet>
+            <Flex style={{height: "400px", width: "90%"}}>
+
+                <Outlet context={{yearSelected}}></Outlet>
+            </Flex>
         </Flex>
     );
 }

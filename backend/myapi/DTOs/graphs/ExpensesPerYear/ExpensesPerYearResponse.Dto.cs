@@ -1,4 +1,4 @@
 public class ExpensesPerYearResponse()
 {
-    public IEnumerable<ExpensesPerYearDto> ExpensesPerYear {get; set;} = null!;
+    public List<ExpensesPerYearDto> Clasifications {get; set;} = null!;
 }

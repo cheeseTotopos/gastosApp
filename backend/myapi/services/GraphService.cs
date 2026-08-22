@@ -4,17 +4,17 @@ using Microsoft.EntityFrameworkCore;
 public class GraphService(UserService _us, AppDBConection _conn)
 {
 
-    private string[] _months {get;}= new[]
-    {
+    private string[] _months {get;} =
+    [
         "Jan", "Feb", "Mar", "Apr", "May", "Jun",
         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-    };
-    public async Task<ResponseFormat<ExpensesPerYearDto?>> ExpensesPerYear(int userid, int year)
+    ];
+    public async Task<ResponseFormat<ExpensesPerYearResponse?>> ExpensesPerYear(int userid, int year)
     {
         //verify if the user exists
         var user = await _us.UserExists(userid);
         if(user == null)
-            return new ResponseFormat<ExpensesPerYearDto?>
+            return new ResponseFormat<ExpensesPerYearResponse?>
             {
                 Success = false,
                 Message = "Usuario no encontrado",
@@ -29,7 +29,7 @@ public class GraphService(UserService _us, AppDBConection _conn)
             join m in _conn.Movements
                 on clas.Id equals m.ClasificationId
 
-            where m.MovementDate.Year == year
+            where m.MovementDate.Year == year && m.MT == 1
 
             group m by new
             {
@@ -55,24 +55,25 @@ public class GraphService(UserService _us, AppDBConection _conn)
         ).ToListAsync();
 
         //order the query result into the nivo format
-        var result = Enumerable.Range(1, 12).Select(month => new
+        var result = Enumerable.Range(1, 12).Select(month => new ExpensesPerYearDto
             {
                 Month = _months[month - 1],
 
                 Clasifications = totals
                     .Where(x => x.Month == month)
                     .ToDictionary(
+                        
                         x => x.Clasification,
                         x => x.Total
                     )
             })
             .ToList();
 
-        return new ResponseFormat<ExpensesPerYearDto?>
+        return new ResponseFormat<ExpensesPerYearResponse?>
         {
             Success = true,
             Message = "Clasificaciones por año obtenidas con éxito",
-            Data = result//in heeeeeeeeeeeeere. The result must be an array of the format "Month:string" and "Clasifications" 
+            Data = new ExpensesPerYearResponse{Clasifications = result}
         };
     }
 }

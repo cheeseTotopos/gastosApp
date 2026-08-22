@@ -10,13 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@nivo/bar": "^0.99.0",
     "@nivo/core": "^0.99.0",
     "@nivo/pie": "^0.99.0",
     "antd": "^6.5.0",
     "axios": "^1.16.1",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
-    "react-router": "^7.15.1"
+    "react-router": "^7.15.1",
+    "react-router-dom": "^7.18.2"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

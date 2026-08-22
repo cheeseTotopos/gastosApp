@@ -1,5 +1,5 @@
 public class ExpensesPerYearDto()
 {
     public string Month {get; set;} = string.Empty;
-    public IEnumerable<GetMovementsTotal> Clasifications {get; set;} = null!;
+    public Dictionary<string, decimal> Clasifications {get; set;} = null!;
 }
