@@ -248,4 +248,110 @@ public class MovementClasificationService(UserService _us, AppDBConection _conn)
             Data = response
         };
     }
+
+    //this method recieve the year. The first one is for making an historic summatory. This one is for making an annual summatory
+    public async Task<ResponseFormat<ClasificationsTotalResponse?>> GetUserClasificationsTotals(int userid, int year)
+    {
+        //check if the user exists
+        var user = await _us.UserExists(userid);
+        if(user == null)
+            return new ResponseFormat<ClasificationsTotalResponse?>
+            {
+                Success = false,
+                Message = "El usuario no fue encontrado",
+                Data = null
+            };
+
+        var totals = await (
+            from clas in _conn.Clasifications
+            where clas.UserRegId == user.Id
+
+            join m in _conn.Movements.Where(m => m.MovementDate.Year == year) on clas.Id equals m.ClasificationId into clasifications
+            from cs in clasifications.DefaultIfEmpty()
+
+            group cs by new
+            {
+                clas.Id,
+                clas.Description,
+                clas.MovementTypeId,
+                clas.Color
+            }
+            into g
+
+            select new GetMovementsTotal
+            {
+                UserId = user.Id,
+                Username = user.Name,
+
+                ClasificationId = g.Key.Id,
+                Clasification = g.Key.Description,
+                MT = g.Key.MovementTypeId,
+                Color = g.Key.Color,
+
+                Total = g.Sum(x => x.Amount)
+            }
+        ).OrderByDescending(x => x.Total).ToListAsync();
+
+
+        var response = new ClasificationsTotalResponse
+        {
+            Clasifications = totals,
+            UserAmount = user.Amount
+        }; 
+
+        return new ResponseFormat<ClasificationsTotalResponse?>
+        {
+            Success = true,
+            Message = "Datos obtenidos correctamente",
+            Data = response
+        };
+    }
+
+    //gets the total number of the movements ever done in a year, group by clasification 
+    public async Task<ResponseFormat<List<FrequienciesResponseDto>?>> GetClasificationsFrequency(int userid, int year)
+    {
+        //check if the user exists
+        var user = await _us.UserExists(userid);
+        if(user == null)
+            return new ResponseFormat<List<FrequienciesResponseDto>?>
+            {
+                Success = false,
+                Message = "El usuario no fue encontrado",
+                Data = null
+            };
+
+        //get the frequencies
+
+        var frequencies = await(
+            from mov in _conn.Movements
+            where mov.UserId == user.Id && mov.MovementDate.Year == year
+
+            join clas in _conn.Clasifications on mov.ClasificationId equals clas.Id
+
+            group mov by new
+            {
+                clas.Id,
+                clas.Description,
+            }
+            into g
+
+            select new FrequienciesResponseDto
+            {
+                UserId = user.Id,
+
+                ClasificationId = g.Key.Id,
+                Clasification = g.Key.Description,
+
+                Count = g.Count()
+            }
+        ).OrderByDescending(x => x.Count).ToListAsync();
+
+
+        return new ResponseFormat<List<FrequienciesResponseDto>?>
+        {
+            Success = true,
+            Message = "Frecuencias obtenidas con éxito",
+            Data = frequencies
+        };
+    }
 }

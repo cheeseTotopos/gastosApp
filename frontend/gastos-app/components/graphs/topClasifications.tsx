@@ -1,9 +1,74 @@
+import { Flex, Typography, Divider, Table} from "antd";
+import { useOutletContext } from "react-router-dom";
+import { useEffect, useState } from "react";
+
+import {getTopClasificationsData} from "../../services/Graph.service";
+import type {TopClasData} from "../../services/Graph.service";
+import type { TableColumnsType } from "antd";
+
 function TopClasifications(){
+
+    const { Title } = Typography;
+
+    type GraphContext = {
+        yearSelected: number
+    };
+    const {yearSelected} = useOutletContext<GraphContext>();
+    const [data, setData] = useState<TopClasData>();
+
+    //configuration for tables
+    interface AmountsType {
+        key: React.Key;
+        clasification: string;
+        total: number;
+    };
+    interface FrequenciesType {
+        key: React.Key;
+        clasification: string;
+        count: number;
+    };
+
+    const columnsForAmounts: TableColumnsType<AmountsType> =[
+        {title: "Clasificación", dataIndex: "clasification"},
+        {title: "Monto total", dataIndex: "total"}
+    ];
+
+    const columnsForFrequencies: TableColumnsType<FrequenciesType> =[
+        {title: "Clasificación", dataIndex: "clasification"},
+        {title: "Cantidad", dataIndex: "count"}
+    ];
+
+    useEffect(()=>{
+
+        async function loadData(){
+            let response:TopClasData = await getTopClasificationsData(yearSelected);
+            setData(response);
+        }
+
+        loadData();
+    }, [yearSelected]);
     return (
-        <>
-            <p>top de clasificaciones</p>
-            <p>Poner las clasificaciones ordenenadas por amount y después en otra columna ordenadas por frecuencia</p>
-        </>
+            <Flex justify="space-around" style={{width: "100%"}}>
+                <Flex vertical>
+                    <Title level={5}>Montos</Title>
+                    <Divider/>
+                    <Table<AmountsType>
+                        rowSelection={{type: "radio"}}
+                        columns={columnsForAmounts}
+                        dataSource={data == undefined? []: data.totals}
+                    />
+                </Flex>
+
+                <Flex vertical>
+                    <Title level={5}>Frequencias</Title>
+                    <Divider/>
+                    <Table<FrequenciesType>
+                        rowSelection={{type: "radio"}}
+                        columns={columnsForFrequencies}
+                        dataSource={data == undefined? []: data.frequencies}
+                    />
+                </Flex>
+            </Flex>
     );
 }
 

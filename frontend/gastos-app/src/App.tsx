@@ -8,7 +8,6 @@ import AddMovement from "../components/movements/addMovement";
 import QueryMovements from "../components/movements/queryMovements";
 import InvoicesVSExpenses from "../components/graphs/invoicesVSexpenses";
 import ExpensesPerYear from "../components/graphs/expensesPerYear";
-import ExpensesPerClasification from "../components/graphs/expensesPerClasification";
 import TopClasifications from "../components/graphs/topClasifications";
 
 import { createBrowserRouter, RouterProvider } from "react-router";
@@ -40,7 +39,6 @@ function App() {
               children: [
                 {path: "exp_vs_inv", element: <InvoicesVSExpenses/>},
                 {path: "exp", element: <ExpensesPerYear/>},
-                {path: "exp_xclas", element: <ExpensesPerClasification/>},
                 {path: "top_clas", element: <TopClasifications/>},
               ]
             },

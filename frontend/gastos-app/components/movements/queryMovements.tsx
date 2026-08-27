@@ -16,7 +16,6 @@ function QueryMovements(){
     const radioOptions: OptionType[] = [
         {value: 1, label: "Gastos vs Ingresos", path: "exp_vs_inv"},
         {value: 2, label: "Gastos durante el año", path: "exp"},
-        {value: 3, label: "Gastos por clasificacion", path: "exp_xclas"},
         {value: 4, label: "Top de clasificaciones", path: "top_clas"}
     ]
 

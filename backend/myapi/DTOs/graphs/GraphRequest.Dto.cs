@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-public class ExpensesPerYearRequest()
+public class GraphRequest()
 {
     [Required]
     public int Year {get; set;}

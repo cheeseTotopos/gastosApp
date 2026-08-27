@@ -1,18 +1,15 @@
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getExpensesPerYearData } from "../../services/Graph.service";
+import { getExpensesPerYearData, type ExpenseData } from "../../services/Graph.service";
 
 import { ResponsiveBar } from '@nivo/bar'
 
 function ExpensesPerYear(){
 
+    const navigate = useNavigate();
+
     type GraphContext = {
         yearSelected: number
-    };
-
-    type ExpenseData = {
-        month: string;
-        [classification: string]: string | number;
     };
 
     const [data, setData] = useState<ExpenseData[]>([]);
@@ -27,12 +24,11 @@ function ExpensesPerYear(){
             setData(response);
 
             if (response.length > 0) {
-                setKeys(
-                    Object.keys(response[0])
-                        .filter(key => key !== "month")
-                );
+                setKeys(Object.keys(response[0]).filter(key => key !== "month"));
             } else {
                 setKeys([]);
+                localStorage.removeItem("token");
+                navigate("/");
             }
         }
         loadData();
