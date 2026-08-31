@@ -1,4 +1,5 @@
-import {Card, Button, Empty, Typography} from "antd";
+import {Card, Button, Empty, Typography, Modal} from "antd";
+import { useState } from "react";
 
 type movementclasification = {
     clasificationId: number,
@@ -13,6 +14,12 @@ type props = {
 
 function ClasificationsTable({clasarray}: props){
 
+    const [openModal, setOpenModal] = useState(false);
+
+    const editClasification = () =>{
+        setOpenModal(true);
+    };
+
     if(clasarray.length == 0){
         return (
             <Empty description={<Typography.Text>Sin clasificaciones</Typography.Text>}></Empty>
@@ -20,26 +27,31 @@ function ClasificationsTable({clasarray}: props){
     }
 
     return (
-        <Card>
-            {
-                clasarray.map(x => {
-                    
-                    const gridstyle: React.CSSProperties = {
-                        textAlign: 'center',
-                        fontSize: "bold",
-                        color: "white",
-                        backgroundColor: `${x.color}`
-                    };
+        <>
+            <Modal open={openModal} onCancel={() => setOpenModal(false)}>
+                <p>ola</p>
+            </Modal>
+            <Card>
+                {
+                    clasarray.map(x => {
+                        //console.log(x);
+                        const gridstyle: React.CSSProperties = {
+                            textAlign: 'center',
+                            fontSize: "bold",
+                            color: "white",
+                            backgroundColor: `${x.color}`
+                        };
 
-                    return <Card.Grid style={gridstyle} key={x.clasificationId}> 
-                        {x.clasification}
-                        <div>
-                            <Button type="text" variant="text" color="primary">...</Button>
-                        </div>
-                        </Card.Grid>
-                })
-            }
-        </Card>
+                        return <Card.Grid style={gridstyle} key={x.clasificationId}> 
+                            {x.clasification}
+                            <div>
+                                <Button type="text" variant="text" color="primary" onClick={editClasification}>...</Button>
+                            </div>
+                            </Card.Grid>
+                    })
+                }
+            </Card>
+        </>
     );
 }
 

@@ -87,20 +87,22 @@ export type Frequencies = {
     key: number,
     clasification: string,
     clasificationId: number,
-    count: number
+    count: number,
+    mt: number
 };
 
 export type Totals = {
     key: number,
     clasification: string,
     clasificationId: number,
-    total: number
+    total: number, 
+    mt: number
 };
 
 export type TopClasData = {
     totals: Totals[],
     frequencies: Frequencies[],
-    userAmount: number
+    userAmount: number,
 };
 
 type RawData = {
@@ -131,7 +133,8 @@ export async function getTopClasificationsData(year: number): Promise<TopClasDat
             key: x.clasificationId,
             clasification: x.clasification,
             clasificationId: x.clasificationId,
-            total: x.total
+            total: x.total,
+            mt: x.mt
         };
         return obj;
     });
@@ -141,7 +144,8 @@ export async function getTopClasificationsData(year: number): Promise<TopClasDat
             key: x.clasificationId,
             clasification: x.clasification,
             clasificationId: x.clasificationId,
-            count: x.count
+            count: x.count,
+            mt: x.mt
         };
         return obj;
     });

@@ -1,4 +1,4 @@
-import { Flex, Typography, Divider, Table} from "antd";
+import { Flex, Typography, Divider, Table, Tag} from "antd";
 import { useOutletContext } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -29,11 +29,29 @@ function TopClasifications(){
     };
 
     const columnsForAmounts: TableColumnsType<AmountsType> =[
+        {
+            title: "MT", 
+            dataIndex: "mt",
+            render(value) {
+                let color = value == 1 ? "magenta" : "green";
+                let text = value == 1 ? "Gasto" : "Ingreso";
+                return <Flex> <Tag variant="outlined" color={color}>{text}</Tag></Flex>
+            },
+        },
         {title: "Clasificación", dataIndex: "clasification"},
         {title: "Monto total", dataIndex: "total"}
     ];
 
     const columnsForFrequencies: TableColumnsType<FrequenciesType> =[
+        {
+            title: "MT", 
+            dataIndex: "mt",
+            render(value) {
+                let color = value == 1 ? "magenta" : "green";
+                let text = value == 1 ? "Gasto" : "Ingreso";
+                return <Flex> <Tag variant="outlined" color={color}>{text}</Tag></Flex>
+            },
+        },
         {title: "Clasificación", dataIndex: "clasification"},
         {title: "Cantidad", dataIndex: "count"}
     ];

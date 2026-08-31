@@ -4,4 +4,5 @@ public class FrequienciesResponseDto
     public int ClasificationId {get; set;}
     public string Clasification {get; set;} = string.Empty;
     public int Count {get; set;}
+    public int MT {get; set;}
 }
