@@ -1,5 +1,6 @@
 import {Card, Button, Empty, Typography, Modal} from "antd";
 import { useState } from "react";
+import { useOutletContext } from "react-router";
 
 type movementclasification = {
     clasificationId: number,
@@ -9,10 +10,12 @@ type movementclasification = {
 };
 
 type props = {
-    clasarray : movementclasification[]
+    clasifications : movementclasification[]
 }
 
-function ClasificationsTable({clasarray}: props){
+function ClasificationsTable(){
+
+    const {clasifications} = useOutletContext<props>();
 
     const [openModal, setOpenModal] = useState(false);
 
@@ -20,7 +23,7 @@ function ClasificationsTable({clasarray}: props){
         setOpenModal(true);
     };
 
-    if(clasarray.length == 0){
+    if(clasifications.length == 0){
         return (
             <Empty description={<Typography.Text>Sin clasificaciones</Typography.Text>}></Empty>
         );
@@ -33,7 +36,7 @@ function ClasificationsTable({clasarray}: props){
             </Modal>
             <Card>
                 {
-                    clasarray.map(x => {
+                    clasifications.map(x => {
                         //console.log(x);
                         const gridstyle: React.CSSProperties = {
                             textAlign: 'center',

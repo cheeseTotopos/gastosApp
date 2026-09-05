@@ -42,3 +42,20 @@ export async function apiAddClasification(mt: 1 | 2, description: string, color:
         
     }
 }
+
+export async function getCreditCards(){
+    let path = "http://localhost:5018/creditcards/getcreditcards";
+
+    let response = await axios.post(
+        path,
+        {},
+        {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        }
+    );
+
+    console.log(response.data.data);
+    return response.data.data;
+}

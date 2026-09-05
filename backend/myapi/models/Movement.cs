@@ -21,4 +21,10 @@ public class Movement()
     [ForeignKey("MovementClasification")]
     public int ClasificationId {get; set;}
     public MovementClasification Clasification{get; set;} = null!;
+    public PaymentMethods PaymentMethod {get; set;}
+    public bool Payed {get; set;}
+    public DateOnly PayedDate {get; set;}
+
+    [ForeignKey("CreditCards")]
+    public int CreditCardId {get; set;}
 }

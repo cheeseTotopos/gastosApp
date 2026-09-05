@@ -44,6 +44,8 @@ function AddMovement(){
 
     const [options, optionsSetter] = useState<ClasOptions[]>();
 
+    //const [paymentOptions, paymentOptionsSetter] = useState
+
     const [disablebtn, disablebtnSetter] = useState(true);
 
     const [openPopConfirm, openPopConfirmSetter] = useState(false);
@@ -194,6 +196,10 @@ function AddMovement(){
 
                         <Form.Item label="Monto">
                             <InputNumber onChange={setAmount} value={movement.amount}/>
+                        </Form.Item>
+
+                        <Form.Item label="Forma de pago">
+                            <AutoComplete options={options} onSelect={onSelectClasification} value={movement.clasificationLabel}></AutoComplete>
                         </Form.Item>
 
                         <Form.Item label="Descripción">

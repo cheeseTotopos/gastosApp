@@ -41,7 +41,7 @@ function PieChart({clasifications}: props){
             arcLinkLabelsColor={{ from: 'color' }}
             arcLabelsSkipAngle={10}
             arcLabelsTextColor={{ from: 'color', modifiers: [['darker', 2]] }}
-            legends={[
+            /*legends={[
                 {
                     anchor: 'bottom',
                     direction: 'row',
@@ -50,7 +50,7 @@ function PieChart({clasifications}: props){
                     itemHeight: 18,
                     symbolShape: 'circle'
                 }
-            ]}
+            ]}*/
         />
     );
 }

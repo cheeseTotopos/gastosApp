@@ -9,6 +9,8 @@ import QueryMovements from "../components/movements/queryMovements";
 import InvoicesVSExpenses from "../components/graphs/invoicesVSexpenses";
 import ExpensesPerYear from "../components/graphs/expensesPerYear";
 import TopClasifications from "../components/graphs/topClasifications";
+import ClasificationsTable from "../components/clasifications/clasification-table";
+import CreditCardsTable from "../components/clasifications/credit-cards-table";
 
 import { createBrowserRouter, RouterProvider } from "react-router";
 
@@ -26,7 +28,11 @@ function App() {
       ),
       children: [
         {
-          path: "/home", element:<HomePage />
+          path: "/home", element:<HomePage />,
+          children: [
+            {path: "clasifications", element: <ClasificationsTable/>},
+            {path: "credit-cards", element: <CreditCardsTable/>}
+          ]
         },
         {
           path: "/movements", 

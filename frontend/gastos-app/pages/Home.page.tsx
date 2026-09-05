@@ -1,13 +1,14 @@
-import { Flex, Button, Input, Modal, Form, Select, ColorPicker, Typography } from "antd";
+import { Flex, Button, Input, Modal, Form, Select, ColorPicker, Typography, Radio } from "antd";
 import type { ColorPickerProps } from "antd";
 import { useNavigate } from "react-router";
 import { useState, useEffect } from "react";
 
-import ClasificationsTable from "../components/clasifications/clasification-table";
 import PieChart from "../components/clasifications/PieChart";
 
 import {getClasifications} from "../services/Clasifications.service";
 import {apiAddClasification} from "../services/Clasifications.service";
+
+import { Outlet } from "react-router";
 
 function HomePage(){
 
@@ -19,6 +20,12 @@ function HomePage(){
         userId: number;
         username: string;
         color: string;
+    };
+
+    type DisplayOptionsType = {
+        value: number,
+        label: string,
+        path: string
     };
 
     const nav = useNavigate();
@@ -40,9 +47,17 @@ function HomePage(){
 
     const [addClasColor, setAddClasColor] = useState<string | null>("");
 
+    //the screen options (show the clasifications or show the credit cards)
+    const [displayopt, setDisplayopt] = useState<DisplayOptionsType>();
+
     const options = [
         {value: 1, label: "Gasto"},
         {value: 2, label: "Ingreso"}
+    ];
+
+    const displayoptions: DisplayOptionsType[] = [
+        {value: 1, label: "Clasificaciones", path: "clasifications"},
+        {value: 2, label: "Tarjetas de crédito", path: "credit-cards"}
     ];
 
     const {Title} = Typography;
@@ -50,6 +65,8 @@ function HomePage(){
     useEffect(()=>{
 
         loadClassifications();
+        setDisplayopt(displayoptions[0]);
+        nav("clasifications");
     }, []);
 
     async function loadClassifications(){
@@ -124,11 +141,23 @@ function HomePage(){
         }
     };
 
+    const changescreen = (e: any) =>{
+        
+        
+        let selectedOption = displayoptions.find(
+            option => option.value === e.target.value
+        );
+
+        setDisplayopt(selectedOption);
+
+        const path = selectedOption?.path;
+        nav(`${path}`);
+    }
+
 
     return (
         <Flex justify="center" vertical gap="large">
             
-
             <Flex justify="center">
                 <Title level={4}>Dinero actual: {userAmount}</Title>
             </Flex>
@@ -137,8 +166,12 @@ function HomePage(){
                 <PieChart clasifications={clasifications}></PieChart>
             </div>
 
+            <Flex justify="center">
+                <Radio.Group options={displayoptions} value={displayopt?.value} onChange={changescreen}/>
+            </Flex>
 
             <Flex justify="center" gap={"small"}>
+                
                 <Input.Search placeholder="no hace la busqueda :v" style={{ width: 200 }}/>
                 <Button type="default"  color="purple" onClick={onOpenAddModal}>Añadir clasificación</Button>
                 <Modal title="Añadir clasificación" open={openAddModal} onCancel={onCloseAddModal} onOk={addClasification}>
@@ -161,10 +194,11 @@ function HomePage(){
                 </Modal>
                 {contextHolder}
             </Flex>
-
+            
+            
             <Flex justify="center" gap={"large"}>
 
-                <ClasificationsTable clasarray = {clasifications} />
+                <Outlet context={{clasifications}}></Outlet>
                 
             </Flex>
         </Flex>
